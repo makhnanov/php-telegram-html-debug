@@ -1,0 +1,17 @@
+networks:
+    php_telegram_html_debug_network:
+        driver: bridge
+
+services:
+
+    php:
+        build:
+            context: ./docker
+        volumes:
+            - .:/app
+        working_dir: /app
+        command: php -S 0.0.0.0:8123 -t /app/test /app/test/test.php
+        ports:
+            - "8123:8123"
+        networks:
+            - php_telegram_html_debug_network

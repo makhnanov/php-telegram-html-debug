@@ -1,0 +1,24 @@
+{
+    "name": "makhnanov/php-telegram-html-debug",
+    "description": "Easy Debug With Telegram Channel With HTML files",
+    "type": "library",
+    "require": {
+        "symfony/var-dumper": "*"
+    },
+    "license": "MIT",
+    "autoload": {
+        "files": [
+            "functions/php-telegram-html-debug.php"
+        ],
+        "exclude-from-classmap": [
+            "/test/"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Roman Bakirov",
+            "email": "makhnanov@protonmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
