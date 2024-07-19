@@ -20,5 +20,5 @@
             "email": "makhnanov@protonmail.com"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "stable"
 }
