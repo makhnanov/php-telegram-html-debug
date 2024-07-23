@@ -1,11 +1,15 @@
 <?php
 
+use Dotenv\Dotenv;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 echo "Hello, Server!";
 
-define('TELEGRAM_HTML_DEBUG_BOT_TOKEN', '**********:**********');
-define('TELEGRAM_HTML_DEBUG_CHAT_ID', -000000000000);
+(Dotenv::createUnsafeImmutable(__DIR__))->load();
+
+define('TELEGRAM_HTML_DEBUG_BOT_TOKEN', $token = getenv('TELEGRAM_HTML_DEBUG_BOT_TOKEN'));
+define('TELEGRAM_HTML_DEBUG_CHAT_ID', $chatId = getenv('TELEGRAM_HTML_DEBUG_CHAT_ID'));
 
 $stdClassExample = new stdClass();
 $stdClassExample->string = 'a';
@@ -14,7 +18,13 @@ $stdClassExample->null = null;
 $stdClassExample->true = true;
 $stdClassExample->false = false;
 
-telegram_debug($stdClassExample, 'Your Debug Caption');
+trm(); // or telegram_remove_old_debug();
+
+// With token & chat for multi channels / bots
+telegram_debug($token, $chatId, $stdClassExample, 'Your Debug Caption');
+
+// Token & chat from global constants for mono chat
+td($stdClassExample, 'Your Debug Caption');
 
 echo '<br>';
-echo "Goodbye, Server!";
+echo "Goodbye, Server!" . PHP_EOL;

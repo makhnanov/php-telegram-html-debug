@@ -3,7 +3,9 @@
     "description": "Easy Debug With Telegram Channel With HTML files",
     "type": "library",
     "require": {
-        "symfony/var-dumper": "*"
+        "symfony/var-dumper": "*",
+        "ext-json": "*",
+        "ext-curl": "*"
     },
     "license": "MIT",
     "autoload": {
@@ -20,5 +22,8 @@
             "email": "makhnanov@protonmail.com"
         }
     ],
-    "minimum-stability": "stable"
+    "minimum-stability": "dev",
+    "require-dev": {
+        "vlucas/phpdotenv": "^5.5"
+    }
 }
