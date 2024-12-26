@@ -52,6 +52,7 @@ if (!function_exists('telegram_debug')) {
             );
 
             $cloner = new VarCloner();
+            $cloner->setMaxItems(PHP_INT_MAX);
             $cloner->addCasters(ReflectionCaster::UNSET_CLOSURE_FILE_INFO);
 
             $handler = function ($var) use ($cloner, $dumper) {
