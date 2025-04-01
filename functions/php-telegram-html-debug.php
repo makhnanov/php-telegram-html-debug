@@ -60,6 +60,11 @@ if (!function_exists('telegram_debug')) {
             };
 
             ob_start();
+            if ($caption) {
+                echo <<<HTML
+<h1 style="color: white;">$caption</h1>
+HTML;
+            }
             $handler($varDump);
             echo <<<HTML
 <style>
