@@ -7,7 +7,7 @@ use Symfony\Component\VarDumper\Dumper\ContextualizedDumper;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 
 if (!function_exists('td')) {
-    function td($varDump, $caption = null)
+    function td($varDump, $caption = null, $messageThreadId = null)
     {
         if (
             !defined('TELEGRAM_HTML_DEBUG_BOT_TOKEN')
@@ -21,7 +21,8 @@ if (!function_exists('td')) {
                 constant('TELEGRAM_HTML_DEBUG_BOT_TOKEN'),
                 constant('TELEGRAM_HTML_DEBUG_CHAT_ID'),
                 $varDump,
-                $caption
+                $caption,
+                $messageThreadId
             );
         }
     }
@@ -29,7 +30,7 @@ if (!function_exists('td')) {
 
 if (!function_exists('telegram_debug')) {
 
-    function telegram_debug($token, $chatId, $varDump, $caption = null)
+    function telegram_debug($token, $chatId, $varDump, $caption = null, $messageThreadId = null)
     {
         try {
             $ch = curl_init();
@@ -41,6 +42,7 @@ if (!function_exists('telegram_debug')) {
                 . $token
                 . "/sendDocument?chat_id="
                 . $chatId
+                . (!$messageThreadId ?: "&message_thread_id=$messageThreadId")
             );
 
             curl_setopt($ch, CURLOPT_POST, true);
