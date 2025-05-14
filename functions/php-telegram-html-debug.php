@@ -183,9 +183,16 @@ if (!function_exists('telegram_remove_old_debug')) {
     }
 }
 
-if (!function_exists('telegram_get_bot_updates_link')) {
-    function telegram_get_bot_updates_link()
+if (!function_exists('get_telegram_bot_updates_link')) {
+    function get_telegram_bot_updates_link(): string
     {
-        dump('https://api.telegram.org/bot' . constant('TELEGRAM_HTML_DEBUG_BOT_TOKEN') . '/getUpdates');
+        return 'https://api.telegram.org/bot' . constant('TELEGRAM_HTML_DEBUG_BOT_TOKEN') . '/getUpdates';
+    }
+}
+
+if (!function_exists('dump_telegram_bot_updates_link')) {
+    function dump_telegram_bot_updates_link(): void
+    {
+        dump(get_telegram_bot_updates_link());
     }
 }
