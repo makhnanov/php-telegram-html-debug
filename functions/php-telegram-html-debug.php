@@ -182,3 +182,10 @@ if (!function_exists('telegram_remove_old_debug')) {
         @unlink(__DIR__ . '/old');
     }
 }
+
+if (!function_exists('telegram_get_bot_updates_link')) {
+    function telegram_get_bot_updates_link()
+    {
+        dump('https://api.telegram.org/bot' . constant('TELEGRAM_HTML_DEBUG_BOT_TOKEN') . '/getUpdates');
+    }
+}
