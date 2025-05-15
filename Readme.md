@@ -8,9 +8,12 @@ This is library for Easy debug with symfony/var-dumper dd() / dump(), but in htm
 composer require --dev makhnanov/php-telegram-html-debug
 ```
 ```php
-define('TELEGRAM_HTML_DEBUG_BOT_TOKEN', 'YOUR_BOT_TOKEN');
-define('TELEGRAM_HTML_DEBUG_CHAT_ID', '-CHAT_ID');
-telegram_debug('qwerty', 'Your Debug Caption', '<h1 style="color: red;" ">Hell World!<h1>');
+define('TD_BOT_TOKEN', 'YOUR_BOT_TOKEN');
+define('TD_CHAT_ID', '-CHAT_ID');
+define('TD_CHAT_THREAD_ID', '15');
+td($exception, 'Error!');
+# Or
+telegram_debug($token, $chatId, $varDump, $caption, $messageThreadId);
 ```
 
 # LongRead
