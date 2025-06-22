@@ -50,7 +50,7 @@ if (!function_exists('telegram_debug')) {
                 . $token
                 . "/sendDocument?chat_id="
                 . $chatId
-                . (!$messageThreadId ?: "&message_thread_id=$messageThreadId")
+                . (!$messageThreadId ? '' : "&message_thread_id=$messageThreadId")
             );
 
             curl_setopt($ch, CURLOPT_POST, true);
