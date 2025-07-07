@@ -6,31 +6,27 @@ use Symfony\Component\VarDumper\Dumper\ContextProvider\SourceContextProvider;
 use Symfony\Component\VarDumper\Dumper\ContextualizedDumper;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 
-const TD_BOT_TOKEN = 'TELEGRAM_HTML_DEBUG_BOT_TOKEN';
-const TD_CHAT_ID = 'TELEGRAM_HTML_DEBUG_CHAT_ID';
-const TD_CHAT_THREAD_ID = 'TELEGRAM_HTML_DEBUG_CHAT_THREAD_ID';
+class TD
+{
+    static public ?string $token = null;
+    static public ?int $chat_id = null;
+    static public ?int $message_thread_id = null;
+}
 
 if (!function_exists('td')) {
-    function td($varDump, $caption = null, $messageThreadId = null)
+    function td($varDump, $caption = null)
     {
-        if (
-            !defined(TD_BOT_TOKEN)
-            || !defined(TD_CHAT_ID)
-        ) {
+        if (!TD::$token || !TD::$chat_id) {
             return null;
-        }
-
-        if (!$messageThreadId && defined(TD_CHAT_THREAD_ID)) {
-            $messageThreadId = constant(TD_CHAT_THREAD_ID);
         }
 
         if (function_exists('telegram_debug')) {
             telegram_debug(
-                constant(TD_BOT_TOKEN),
-                constant(TD_CHAT_ID),
+                TD::$token,
+                TD::$chat_id,
                 $varDump,
                 $caption,
-                $messageThreadId
+                TD::$message_thread_id
             );
         }
     }
@@ -196,10 +192,10 @@ if (!function_exists('telegram_remove_old_debug')) {
 if (!function_exists('get_telegram_bot_updates_link')) {
     function get_telegram_bot_updates_link(): string
     {
-        if (!defined(TD_BOT_TOKEN)) {
+        if (!TD::$token) {
             return '';
         }
-        return 'https://api.telegram.org/bot' . constant(TD_BOT_TOKEN) . '/getUpdates';
+        return 'https://api.telegram.org/bot' . TD::$token . '/getUpdates';
     }
 }
 
