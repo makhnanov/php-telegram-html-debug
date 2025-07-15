@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpMissingFieldTypeInspection */
 
 use Symfony\Component\VarDumper\Caster\ReflectionCaster;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
@@ -8,9 +8,9 @@ use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 
 class TD
 {
-    static public ?string $token = null;
-    static public ?int $chat_id = null;
-    static public ?int $message_thread_id = null;
+    public static $token = null;
+    public static $chat_id = null;
+    public static $message_thread_id = null;
 }
 
 if (!function_exists('td')) {
@@ -21,7 +21,7 @@ if (!function_exists('td')) {
         }
 
         if (function_exists('telegram_debug')) {
-            telegram_debug(
+            return telegram_debug(
                 TD::$token,
                 TD::$chat_id,
                 $varDump,
@@ -29,6 +29,8 @@ if (!function_exists('td')) {
                 TD::$message_thread_id
             );
         }
+
+        return null;
     }
 }
 
