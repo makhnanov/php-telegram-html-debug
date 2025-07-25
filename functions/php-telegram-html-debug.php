@@ -13,197 +13,191 @@ class TD
     public static $message_thread_id = null;
 }
 
-if (!function_exists('td')) {
-    function td($varDump, $caption = null)
-    {
-        if (!TD::$token || !TD::$chat_id) {
-            return null;
-        }
-
-        if (function_exists('telegram_debug')) {
-            return telegram_debug(
-                TD::$token,
-                TD::$chat_id,
-                $varDump,
-                $caption,
-                TD::$message_thread_id
-            );
-        }
-
-        return null;
-    }
+function tdPassThrough($varDump, $caption = null)
+{
+    td($varDump, $caption);
+    return $varDump;
 }
 
-if (!function_exists('telegram_debug')) {
+function td($varDump, $caption = null)
+{
+    if (!TD::$token || !TD::$chat_id) {
+        return null;
+    }
 
-    function telegram_debug($token, $chatId, $varDump, $caption = null, $messageThreadId = null)
-    {
-        try {
-            $ch = curl_init();
+    if (function_exists('telegram_debug')) {
+        return telegram_debug(
+            TD::$token,
+            TD::$chat_id,
+            $varDump,
+            $caption,
+            TD::$message_thread_id
+        );
+    }
 
-            curl_setopt(
-                $ch,
-                CURLOPT_URL,
-                "https://api.telegram.org/bot"
-                . $token
-                . "/sendDocument?chat_id="
-                . $chatId
-                . (!$messageThreadId ? '' : "&message_thread_id=$messageThreadId")
-            );
+    return null;
+}
 
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-            $dumper = new ContextualizedDumper(
-                new HtmlDumper(),
-                [new SourceContextProvider()]
-            );
+function telegram_debug($token, $chatId, $varDump, $caption = null, $messageThreadId = null)
+{
+    try {
+        $ch = curl_init();
 
-            $cloner = new VarCloner();
-            $cloner->setMaxItems(PHP_INT_MAX);
-            $cloner->addCasters(ReflectionCaster::UNSET_CLOSURE_FILE_INFO);
+        curl_setopt(
+            $ch,
+            CURLOPT_URL,
+            "https://api.telegram.org/bot"
+            . $token
+            . "/sendDocument?chat_id="
+            . $chatId
+            . (!$messageThreadId ? '' : "&message_thread_id=$messageThreadId")
+        );
 
-            $handler = function ($var) use ($cloner, $dumper) {
-                $dumper->dump($cloner->cloneVar($var));
-            };
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-            ob_start();
-            if ($caption) {
-                echo <<<HTML
+        $dumper = new ContextualizedDumper(
+            new HtmlDumper(),
+            [new SourceContextProvider()]
+        );
+
+        $cloner = new VarCloner();
+        $cloner->setMaxItems(PHP_INT_MAX);
+        $cloner->addCasters(ReflectionCaster::UNSET_CLOSURE_FILE_INFO);
+
+        $handler = function ($var) use ($cloner, $dumper) {
+            $dumper->dump($cloner->cloneVar($var));
+        };
+
+        ob_start();
+        if ($caption) {
+            echo <<<HTML
 <h1 style="color: white;">$caption</h1>
 HTML;
-            }
-            $handler($varDump);
-            echo <<<HTML
+        }
+        $handler($varDump);
+        echo <<<HTML
 <style>
 body {
     background-color: #18171B;
 }
 </style>
 HTML;
-            $htmlData = ob_get_clean();
+        $htmlData = ob_get_clean();
 
-            $tmpFile = __DIR__ . '/tmp';
+        $tmpFile = __DIR__ . '/tmp';
 
-            file_put_contents($tmpFile, $htmlData);
+        file_put_contents($tmpFile, $htmlData);
 
-            $cFile = new CURLFile($tmpFile, 'text/plain', 'debug.html');
+        $cFile = new CURLFile($tmpFile, 'text/plain', 'debug.html');
 
-            curl_setopt(
-                $ch,
-                CURLOPT_POSTFIELDS,
-                $caption
-                    ? [
-                    'document' => $cFile,
-                    'caption' => $caption,
-                ]
-                    : [
-                    'document' => $cFile,
-                ]
-            );
+        curl_setopt(
+            $ch,
+            CURLOPT_POSTFIELDS,
+            $caption
+                ? [
+                'document' => $cFile,
+                'caption' => $caption,
+            ]
+                : [
+                'document' => $cFile,
+            ]
+        );
 
-            $result = curl_exec($ch);
+        $result = curl_exec($ch);
 
-            try {
-                $decoded = json_decode($result, true);
-                if (
-                    isset($decoded['ok'])
-                    && $decoded['ok'] === true
-                    && isset($decoded['result']['chat']['id'])
-                    && isset($decoded['result']['message_id'])
-                ) {
-                    $old = @file_get_contents(__DIR__ . '/old');
-                    @file_put_contents(
-                        __DIR__ . '/old',
-                        implode(
-                            ';',
-                            array_filter([
-                                $old ?: '',
-                                $decoded['result']['chat']['id'],
-                                $decoded['result']['message_id'],
-                                $token
-                            ])
-                        )
-                    );
-                }
-
-            } catch (Throwable $t) {
-                // Silence
+        try {
+            $decoded = json_decode($result, true);
+            if (
+                isset($decoded['ok'])
+                && $decoded['ok'] === true
+                && isset($decoded['result']['chat']['id'])
+                && isset($decoded['result']['message_id'])
+            ) {
+                $old = @file_get_contents(__DIR__ . '/old');
+                @file_put_contents(
+                    __DIR__ . '/old',
+                    implode(
+                        ';',
+                        array_filter([
+                            $old ?: '',
+                            $decoded['result']['chat']['id'],
+                            $decoded['result']['message_id'],
+                            $token
+                        ])
+                    )
+                );
             }
 
-            unlink($tmpFile);
-
-            curl_close($ch);
-
-            return $result;
-
-        } catch (Throwable $e) {
+        } catch (Throwable $t) {
             // Silence
-            return null;
         }
+
+        unlink($tmpFile);
+
+        curl_close($ch);
+
+        return $result;
+
+    } catch (Throwable $e) {
+        // Silence
+        return null;
     }
 }
 
-if (!function_exists('trm')) {
-    function trm() {
-        if (function_exists('telegram_remove_old_debug')) {
-            telegram_remove_old_debug();
-        }
+function trm() {
+    if (function_exists('telegram_remove_old_debug')) {
+        telegram_remove_old_debug();
     }
 }
 
-if (!function_exists('telegram_remove_old_debug')) {
-    function telegram_remove_old_debug()
-    {
-        $old = @file_get_contents(__DIR__ . '/old');
-        if (!$old) {
-            return;
-        }
+function telegram_remove_old_debug()
+{
+    $old = @file_get_contents(__DIR__ . '/old');
+    if (!$old) {
+        return;
+    }
 
-        $explode = explode(';', $old);
-        $chunks = array_chunk($explode, 3);
+    $explode = explode(';', $old);
+    $chunks = array_chunk($explode, 3);
 
-        $bots = [];
-        foreach ($chunks as list($chatId, $messageId, $botToken)) {
-            $bots[$botToken][$chatId][] = $messageId;
-        }
+    $bots = [];
+    foreach ($chunks as list($chatId, $messageId, $botToken)) {
+        $bots[$botToken][$chatId][] = $messageId;
+    }
 
-        foreach ($bots as $botToken => $chats) {
-            foreach ($chats as $chat => $messages) {
-                $chunks = array_chunk($messages, 100);
-                foreach ($chunks as $chunk) {
-                    try {
-                        @file_get_contents(
-                            'https://api.telegram.org/bot'
-                            . $botToken
-                            . '/deleteMessages?chat_id='
-                            . $chat
-                            . '&message_ids=' . json_encode($chunk)
-                        );
+    foreach ($bots as $botToken => $chats) {
+        foreach ($chats as $chat => $messages) {
+            $chunks = array_chunk($messages, 100);
+            foreach ($chunks as $chunk) {
+                try {
+                    @file_get_contents(
+                        'https://api.telegram.org/bot'
+                        . $botToken
+                        . '/deleteMessages?chat_id='
+                        . $chat
+                        . '&message_ids=' . json_encode($chunk)
+                    );
 
-                    } catch (Throwable $t) {
-                        // Silence
-                    }
+                } catch (Throwable $t) {
+                    // Silence
                 }
             }
         }
-        @unlink(__DIR__ . '/old');
     }
+    @unlink(__DIR__ . '/old');
 }
 
-if (!function_exists('get_telegram_bot_updates_link')) {
-    function get_telegram_bot_updates_link(): string
-    {
-        if (!TD::$token) {
-            return '';
-        }
-        return 'https://api.telegram.org/bot' . TD::$token . '/getUpdates';
+function get_telegram_bot_updates_link(): string
+{
+    if (!TD::$token) {
+        return '';
     }
+    return 'https://api.telegram.org/bot' . TD::$token . '/getUpdates';
 }
 
-if (!function_exists('dump_telegram_bot_updates_link')) {
-    function dump_telegram_bot_updates_link(): void
-    {
-        dump(get_telegram_bot_updates_link());
-    }
+function dump_telegram_bot_updates_link(): void
+{
+    dump(get_telegram_bot_updates_link());
 }
