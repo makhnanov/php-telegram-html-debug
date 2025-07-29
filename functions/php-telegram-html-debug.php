@@ -29,7 +29,7 @@ function tdPassThrough($varDump, $caption = null)
     return $varDump;
 }
 
-function td($varDump, $caption = null): bool|TD|string|null
+function td($varDump = null, $caption = null): bool|TD|string|null
 {
     if (!func_num_args()) {
         return TD::one();
