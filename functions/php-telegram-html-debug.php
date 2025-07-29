@@ -11,6 +11,16 @@ class TD
     public static $token = null;
     public static $chat_id = null;
     public static $message_thread_id = null;
+
+    private static $instance;
+
+    public static function one(): self
+    {
+        if (self::$instance) {
+            return self::$instance;
+        }
+        return self::$instance = new self();
+    }
 }
 
 function tdPassThrough($varDump, $caption = null)
@@ -19,8 +29,12 @@ function tdPassThrough($varDump, $caption = null)
     return $varDump;
 }
 
-function td($varDump, $caption = null)
+function td($varDump, $caption = null): bool|TD|string|null
 {
+    if (!func_num_args()) {
+        return TD::one();
+    }
+
     if (!TD::$token || !TD::$chat_id) {
         return null;
     }
