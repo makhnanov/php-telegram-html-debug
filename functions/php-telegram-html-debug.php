@@ -14,7 +14,7 @@ class Single
 
     protected static $instance;
 
-    public static function one(): static
+    public static function one(): self
     {
         if (self::$instance) {
             return self::$instance;
