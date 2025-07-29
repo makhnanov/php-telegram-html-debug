@@ -8,18 +8,18 @@ use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 
 class Single
 {
+    protected static self $instance;
+
     protected function __construct()
     {
     }
 
-    protected static $instance;
-
-    public static function one(): self
+    public static function one(): static
     {
-        if (self::$instance) {
+        if (isset(self::$instance)) {
             return self::$instance;
         }
-        return self::$instance = new self();
+        return self::$instance = new static();
     }
 }
 
