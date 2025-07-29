@@ -4,8 +4,45 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "85c8af7f781e27c0bfadf53e08b9ab00",
+    "content-hash": "2a77a7fa07af80317ffc6d2347aff309",
     "packages": [
+        {
+            "name": "makhnanov/php-global-singleton",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/makhnanov/php-global-singleton.git",
+                "reference": "2d3d89387a61a3091c2fd1e63cfd8d70f25f9619"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/makhnanov/php-global-singleton/zipball/2d3d89387a61a3091c2fd1e63cfd8d70f25f9619",
+                "reference": "2d3d89387a61a3091c2fd1e63cfd8d70f25f9619",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.4"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "global-singleton.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "RomaxaCoder"
+                }
+            ],
+            "description": "PHP Singleton Implementation.",
+            "support": {
+                "issues": "https://github.com/makhnanov/php-global-singleton/issues",
+                "source": "https://github.com/makhnanov/php-global-singleton/tree/main"
+            },
+            "time": "2025-07-29T15:15:12+00:00"
+        },
         {
             "name": "symfony/polyfill-mbstring",
             "version": "1.x-dev",
@@ -634,10 +671,15 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "makhnanov/php-global-singleton": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "platform": {
+        "ext-json": "*",
+        "ext-curl": "*"
+    },
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
 }

@@ -5,7 +5,8 @@
     "require": {
         "symfony/var-dumper": "*",
         "ext-json": "*",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "makhnanov/php-global-singleton": "dev-main"
     },
     "license": "MIT",
     "autoload": {

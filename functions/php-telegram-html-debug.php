@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpMissingFieldTypeInspection */
+<?php /** @noinspection PhpUnused */
+
+declare(strict_types=1);
 
 use Symfony\Component\VarDumper\Caster\ReflectionCaster;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
@@ -6,28 +8,11 @@ use Symfony\Component\VarDumper\Dumper\ContextProvider\SourceContextProvider;
 use Symfony\Component\VarDumper\Dumper\ContextualizedDumper;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 
-class Single
+class TD extends GlobalSingleton
 {
-    protected static self $instance;
-
-    protected function __construct()
-    {
-    }
-
-    public static function one(): static
-    {
-        if (isset(self::$instance)) {
-            return self::$instance;
-        }
-        return self::$instance = new static();
-    }
-}
-
-class TD extends Single
-{
-    public static $token = null;
-    public static $chat_id = null;
-    public static $message_thread_id = null;
+    public static null|string|int $token = null;
+    public static null|string|int $chat_id = null;
+    public static null|string|int $message_thread_id = null;
 }
 
 function tdPassThrough($varDump, $caption = null)
@@ -60,6 +45,7 @@ function td($varDump = null, $caption = null): bool|TD|string|null
 }
 
 
+/** @noinspection PhpMissingReturnTypeInspection */
 function telegram_debug($token, $chatId, $varDump, $caption = null, $messageThreadId = null)
 {
     try {
@@ -151,7 +137,7 @@ HTML;
                 );
             }
 
-        } catch (Throwable $t) {
+        } catch (Throwable) {
             // Silence
         }
 
@@ -161,19 +147,20 @@ HTML;
 
         return $result;
 
-    } catch (Throwable $e) {
+    } catch (Throwable) {
         // Silence
         return null;
     }
 }
 
-function trm() {
+function trm(): void
+{
     if (function_exists('telegram_remove_old_debug')) {
         telegram_remove_old_debug();
     }
 }
 
-function telegram_remove_old_debug()
+function telegram_remove_old_debug(): void
 {
     $old = @file_get_contents(__DIR__ . '/old');
     if (!$old) {
@@ -201,7 +188,7 @@ function telegram_remove_old_debug()
                         . '&message_ids=' . json_encode($chunk)
                     );
 
-                } catch (Throwable $t) {
+                } catch (Throwable) {
                     // Silence
                 }
             }
