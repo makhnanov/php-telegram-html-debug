@@ -6,21 +6,28 @@ use Symfony\Component\VarDumper\Dumper\ContextProvider\SourceContextProvider;
 use Symfony\Component\VarDumper\Dumper\ContextualizedDumper;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 
-class TD
+class Single
 {
-    public static $token = null;
-    public static $chat_id = null;
-    public static $message_thread_id = null;
+    protected function __construct()
+    {
+    }
 
-    private static $instance;
+    protected static $instance;
 
-    public static function one(): self
+    public static function one(): static
     {
         if (self::$instance) {
             return self::$instance;
         }
         return self::$instance = new self();
     }
+}
+
+class TD extends Single
+{
+    public static $token = null;
+    public static $chat_id = null;
+    public static $message_thread_id = null;
 }
 
 function tdPassThrough($varDump, $caption = null)
